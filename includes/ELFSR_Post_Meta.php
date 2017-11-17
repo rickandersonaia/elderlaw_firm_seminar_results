@@ -8,4 +8,8 @@
 
 class ELFSR_Post_Meta {
 
+	public function __construct() {
+		add_action( 'init', array($this, 'law_firm_post_type') );
+	}
+
 }

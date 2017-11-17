@@ -59,8 +59,10 @@ class Elderlaw_Firm_Seminar_Results{
 			require_once VENDOR_PATH . 'webdevstudios/cmb2/init.php';
 		}
 
-		require_once( INC_PATH . 'dhprg_assemble_report_from_data.php' );
+		require_once( INC_PATH . 'ELFSR_Post_Types.php' );
 		require_once( VENDOR_PATH . 'autoload.php' );
+
+		add_action('init', array($this, 'init'));
 	}
 
 
@@ -85,6 +87,7 @@ class Elderlaw_Firm_Seminar_Results{
 	 */
 
 	public function _activate() {
+		flush_rewrite_rules();
 	}
 
 
@@ -107,6 +110,8 @@ class Elderlaw_Firm_Seminar_Results{
 
 		// Load translated strings for plugin.
 		load_plugin_textdomain( 'elfsr', false, dirname( $this->basename ) . '/languages/' );
+		new ELFSR_Post_Types();
+
 
 	}
 
