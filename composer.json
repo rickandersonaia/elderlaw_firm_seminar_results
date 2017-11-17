@@ -1,0 +1,14 @@
+{
+    "name": "ander/elderlaw-firm-seminar-results",
+    "description": "Creates post types, taxonomies & post meta for keeping track of semiars",
+    "type": "p",
+    "require": {
+        "webdevstudios/cmb2": "^2.2"
+    },
+    "authors": [
+        {
+            "name": "Rick Anderson",
+            "email": "rick@byobwebsite.com"
+        }
+    ]
+}
