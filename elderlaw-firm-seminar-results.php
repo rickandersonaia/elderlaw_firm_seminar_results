@@ -36,7 +36,7 @@ Author URI: https://www.byobwebsite.com
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-class Elderlaw_Firm_Seminar_Results{
+final class Elderlaw_Firm_Seminar_Results{
 
 
 	const VERSION = '0.1';
@@ -60,9 +60,15 @@ class Elderlaw_Firm_Seminar_Results{
 		}
 
 		require_once( INC_PATH . 'ELFSR_Post_Types.php' );
+		require_once( INC_PATH . 'ELFSR_Taxonomies.php' );
+		require_once( INC_PATH . 'ELFSR_Post_Meta.php' );
 		require_once( VENDOR_PATH . 'autoload.php' );
 
 		add_action('init', array($this, 'init'));
+
+		new ELFSR_Post_Types();
+		new ELFSR_Taxonomies();
+		new ELFSR_Post_Meta();
 	}
 
 
@@ -110,8 +116,6 @@ class Elderlaw_Firm_Seminar_Results{
 
 		// Load translated strings for plugin.
 		load_plugin_textdomain( 'elfsr', false, dirname( $this->basename ) . '/languages/' );
-		new ELFSR_Post_Types();
-
 
 	}
 

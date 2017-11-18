@@ -9,21 +9,19 @@
 class ELFSR_Post_Types {
 
 	public function __construct() {
-		add_action( 'init', array($this, 'law_firm_post_type') );
-		add_action( 'init', array($this, 'campaign_post_type') );
-		add_action( 'init', array($this, 'event_post_type') );
-		add_action( 'init', array($this, 'presentation_post_type') );
-		add_action( 'init', array($this, 'venue_post_type') );
-		add_action( 'init', array($this, 'ad_post_type') );
+		add_action( 'init', array($this, 'law_firm_post_type'), 9 );
+		add_action( 'init', array($this, 'campaign_post_type'), 9 );
+		add_action( 'init', array($this, 'event_post_type'), 9 );
+		add_action( 'init', array($this, 'presentation_post_type'), 9 );
+		add_action( 'init', array($this, 'venue_post_type'), 9 );
+		add_action( 'init', array($this, 'ad_post_type'), 9 );
 	}
 
-	protected function law_firm_post_type() {
+	public function law_firm_post_type() {
 		$labels = array(
 			'name'               => _x( 'Law Firms', 'post type general name', 'elfsr' ),
 			'singular_name'      => _x( 'Law Firm', 'post type singular name', 'elfsr' ),
 			'menu_name'          => _x( 'Law Firms', 'admin menu', 'elfsr' ),
-			'menu_position'      => 20,
-			'menu_icon'          => 'dashicons-store',
 			'name_admin_bar'     => _x( 'Law Firm', 'add new on admin bar', 'elfsr' ),
 			'add_new'            => _x( 'Add New', 'firm', 'elfsr' ),
 			'add_new_item'       => __( 'Add New Law Firm', 'elfsr' ),
@@ -43,26 +41,26 @@ class ELFSR_Post_Types {
 			'public'             => true,
 			'publicly_queryable' => true,
 			'show_ui'            => true,
-			'show_in_menu'       => false,
+			'show_in_nav_menus'  => false,
+			'menu_position'      => 20,
+			'menu_icon'          => 'dashicons-store',
 			'query_var'          => true,
 			'rewrite'            => array( 'slug' => 'law-firm' ),
 			'capability_type'    => 'post',
 			'has_archive'        => true,
 			'hierarchical'       => false,
-			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' )
+			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
+			'taxonomies'         => array('firm', 'demographic')
 		);
 
 		register_post_type( 'law_firm', $args );
 	}
 
-	protected function campaign_post_type() {
+	public function campaign_post_type() {
 		$labels = array(			
 			'name'               => _x( 'Campaigns', 'post type general name', 'your-plugin-textdomain' ),
 			'singular_name'      => _x( 'Campaign', 'post type singular name', 'your-plugin-textdomain' ),
 			'menu_name'          => _x( 'Campaigns', 'admin menu', 'your-plugin-textdomain' ),
-			'menu_position'      => 20,
-			'menu_icon'          => 'dashicons-flag',
 			'name_admin_bar'     => _x( 'Campaign', 'add new on admin bar', 'your-plugin-textdomain' ),
 			'add_new'            => _x( 'Add New', 'campaign', 'your-plugin-textdomain' ),
 			'add_new_item'       => __( 'Add New Campaign', 'your-plugin-textdomain' ),
@@ -81,26 +79,26 @@ class ELFSR_Post_Types {
 			'public'             => true,
 			'publicly_queryable' => true,
 			'show_ui'            => true,
-			'show_in_menu'       => true,
+			'show_in_nav_menus'  => false,
+			'menu_position'      => 20,
+			'menu_icon'          => 'dashicons-flag',
 			'query_var'          => true,
 			'rewrite'            => array( 'slug' => 'campaign' ),
 			'capability_type'    => 'post',
 			'has_archive'        => true,
 			'hierarchical'       => false,
-			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' )
+			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
+			'taxonomies'         => array('firm')
 		);
 
 		register_post_type( 'campaign', $args );
 	}
 
-	protected function event_post_type() {
+	public function event_post_type() {
 		$labels = array(
 			'name'               => _x( 'Events', 'post type general name', 'your-plugin-textdomain' ),
 			'singular_name'      => _x( 'Event', 'post type singular name', 'your-plugin-textdomain' ),
 			'menu_name'          => _x( 'Events', 'admin menu', 'your-plugin-textdomain' ),
-			'menu_position'      => 20,
-			'menu_icon'          => 'dashicons-tickets-alt',
 			'name_admin_bar'     => _x( 'Event', 'add new on admin bar', 'your-plugin-textdomain' ),
 			'add_new'            => _x( 'Add New', 'event', 'your-plugin-textdomain' ),
 			'add_new_item'       => __( 'Add New Event', 'your-plugin-textdomain' ),
@@ -120,26 +118,26 @@ class ELFSR_Post_Types {
 			'public'             => true,
 			'publicly_queryable' => true,
 			'show_ui'            => true,
-			'show_in_menu'       => true,
+			'menu_position'      => 20,
+			'menu_icon'          => 'dashicons-tickets-alt',
+			'show_in_nav_menus'  => false,
 			'query_var'          => true,
 			'rewrite'            => array( 'slug' => 'events' ),
 			'capability_type'    => 'post',
 			'has_archive'        => true,
 			'hierarchical'       => false,
-			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' )
+			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
+			'taxonomies'         => array('firm')
 		);
 
 		register_post_type( 'events', $args );
 	}
 
-	protected function presentation_post_type() {
+	public function presentation_post_type() {
 		$labels = array(
 			'name'               => _x( 'Presentations', 'post type general name', 'your-plugin-textdomain' ),
 			'singular_name'      => _x( 'Presentation', 'post type singular name', 'your-plugin-textdomain' ),
 			'menu_name'          => _x( 'Presentations', 'admin menu', 'your-plugin-textdomain' ),
-			'menu_position'      => 20,
-			'menu_icon'          => 'dashicons-video-alt',
 			'name_admin_bar'     => _x( 'Presentation', 'add new on admin bar', 'your-plugin-textdomain' ),
 			'add_new'            => _x( 'Add New', 'presentation', 'your-plugin-textdomain' ),
 			'add_new_item'       => __( 'Add New Presentation', 'your-plugin-textdomain' ),
@@ -158,26 +156,26 @@ class ELFSR_Post_Types {
 			'public'             => true,
 			'publicly_queryable' => true,
 			'show_ui'            => true,
-			'show_in_menu'       => true,
+			'menu_position'      => 20,
+			'menu_icon'          => 'dashicons-video-alt',
+			'show_in_nav_menus'  => false,
 			'query_var'          => true,
 			'rewrite'            => array( 'slug' => 'presentation' ),
 			'capability_type'    => 'post',
 			'has_archive'        => true,
 			'hierarchical'       => false,
-			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' )
+			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
+			'taxonomies'         => array('firm')
 		);
 
 		register_post_type( 'presentation', $args );
 	}
 
-	protected function venue_post_type() {
+	public function venue_post_type() {
 		$labels = array(
 			'name'               => _x( 'Venues', 'post type general name', 'your-plugin-textdomain' ),
 			'singular_name'      => _x( 'Venue', 'post type singular name', 'your-plugin-textdomain' ),
 			'menu_name'          => _x( 'Venues', 'admin menu', 'your-plugin-textdomain' ),
-			'menu_position'      => 20,
-			'menu_icon'          => 'dashicons-location-alt',
 			'name_admin_bar'     => _x( 'Venue', 'add new on admin bar', 'your-plugin-textdomain' ),
 			'add_new'            => _x( 'Add New', 'venue', 'your-plugin-textdomain' ),
 			'add_new_item'       => __( 'Add New Venue', 'your-plugin-textdomain' ),
@@ -197,26 +195,26 @@ class ELFSR_Post_Types {
 			'public'             => true,
 			'publicly_queryable' => true,
 			'show_ui'            => true,
-			'show_in_menu'       => true,
+			'menu_position'      => 21,
+			'menu_icon'          => 'dashicons-location-alt',
+			'show_in_nav_menus'  => false,
 			'query_var'          => true,
 			'rewrite'            => array( 'slug' => 'venue' ),
 			'capability_type'    => 'post',
 			'has_archive'        => true,
 			'hierarchical'       => false,
-			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' )
+			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
+			'taxonomies'         => array('firm', 'venue_type')
 		);
 
 		register_post_type( 'venue', $args );
 	}
 
-	protected function ad_post_type() {
+	public function ad_post_type() {
 		$labels = array(
 			'name'               => _x( 'Ads', 'post type general name', 'your-plugin-textdomain' ),
 			'singular_name'      => _x( 'Ad', 'post type singular name', 'your-plugin-textdomain' ),
 			'menu_name'          => _x( 'Ads', 'admin menu', 'your-plugin-textdomain' ),
-			'menu_position'      => 20,
-			'menu_icon'          => 'dashicons-money',
 			'name_admin_bar'     => _x( 'Ad', 'add new on admin bar', 'your-plugin-textdomain' ),
 			'add_new'            => _x( 'Add New', 'ad', 'your-plugin-textdomain' ),
 			'add_new_item'       => __( 'Add New Ad', 'your-plugin-textdomain' ),
@@ -235,14 +233,16 @@ class ELFSR_Post_Types {
 			'public'             => true,
 			'publicly_queryable' => true,
 			'show_ui'            => true,
-			'show_in_menu'       => true,
+			'menu_position'      => 22,
+			'menu_icon'          => 'dashicons-money',
+			'show_in_nav_menus'  => false,
 			'query_var'          => true,
 			'rewrite'            => array( 'slug' => 'ads' ),
 			'capability_type'    => 'post',
 			'has_archive'        => true,
 			'hierarchical'       => false,
-			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' )
+			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
+			'taxonomies'         => array('firm', 'ad_type')
 		);
 
 		register_post_type( 'ads', $args );

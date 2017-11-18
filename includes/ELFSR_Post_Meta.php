@@ -9,7 +9,13 @@
 class ELFSR_Post_Meta {
 
 	public function __construct() {
-		add_action( 'init', array($this, 'law_firm_post_type') );
+
+		add_action('cmb2_admin_init', array($this, ''));
+
+	}
+
+	public function law_firm_meta(){
+
 	}
 
 }
