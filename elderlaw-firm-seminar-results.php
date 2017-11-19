@@ -54,9 +54,14 @@ final class Elderlaw_Firm_Seminar_Results{
 
 		define( 'VENDOR_PATH', $this->path . 'vendor/' );
 		define( 'INC_PATH', $this->path . 'includes/' );
+		define( 'STATIC_URL', $this->url . 'static/' );
 
 		if ( file_exists( VENDOR_PATH . 'webdevstudios/cmb2/init.php' ) ) {
 			require_once VENDOR_PATH . 'webdevstudios/cmb2/init.php';
+		}
+
+		if(is_admin()){
+			add_action('admin_enqueue_scripts', array($this, 'admin_styles'));
 		}
 
 		require_once( INC_PATH . 'ELFSR_Post_Types.php' );
@@ -69,6 +74,10 @@ final class Elderlaw_Firm_Seminar_Results{
 		new ELFSR_Post_Types();
 		new ELFSR_Taxonomies();
 		new ELFSR_Post_Meta();
+	}
+
+	public function admin_styles(){
+		wp_enqueue_style('elfsr-admin', STATIC_URL . "admin.css");
 	}
 
 
