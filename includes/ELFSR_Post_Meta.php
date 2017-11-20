@@ -28,6 +28,7 @@ class ELFSR_Post_Meta {
 
 		add_action('cmb2_admin_init', array($this, 'law_firm_meta'));
 		add_action('cmb2_admin_init', array($this, 'venue_meta'));
+		add_action('cmb2_admin_init', array($this, 'presentation_meta'));
 		add_action( 'cmb2_render_zip_code', array($this, 'create_zip_code_field'), 10, 5 );
 		add_filter( 'cmb2_sanitize_zip_code', array($this, 'sanitize_zip_code_field'), 10, 2 );
 	}
@@ -159,8 +160,8 @@ class ELFSR_Post_Meta {
 			'name'       => esc_html__( 'Seating Arrangement', 'elfsr' ),
 			'id'         => self::prefix . 'venue_seating_arrangement',
 			'type'       => 'select',
-			'options' => array('theatre' => 'Theatre', 'classroom' => 'Classroom', 'half_rounds' => 'Half rounds',
-				'conference_table' => 'Conference table', 'other' => 'Other' )
+			'options' => array('Theatre' => 'Theatre', 'Classroom' => 'Classroom', 'Half rounds' => 'Half rounds',
+				'Conference table' => 'Conference table', 'other' => 'Other' )
 		) );
 
 		$v->add_field( array(
@@ -172,6 +173,192 @@ class ELFSR_Post_Meta {
 		) );
 	}
 
+	public function presentation_meta(){
+
+		$p = new_cmb2_box( array(
+			'id'            => self::prefix . 'presentation_metabox',
+			'title'         => esc_html__( 'Presentation Details', 'elfsr' ),
+			'object_types'  => array( 'presentation' ), // Post type
+			'context'    => 'normal',
+			'priority'   => 'high',
+			'show_names' => true, // Show field names on the left
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Nick name', 'elfsr' ),
+			'desc'       => esc_html__( 'Nick name for this presentation', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_nick_name',
+			'type'       => 'text',
+			'column'     => true, // Display field value in the admin post-listing columns
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Presenter Type', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_presenter_type',
+			'type'       => 'multicheck_inline',
+			'options'    => array('Lawyer' => 'Lawyer', 'Multiple Lawyers, same firm' => 'Multiple Lawyers, same firm',
+			                      'Law staff' => 'Law staff', 'Financial advisor' => 'Financial advisor',
+			                      'other' => 'Other')
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Describe the other presenter type', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_presenter_type_description',
+			'type'       => 'textarea_small',
+			'show_on_cb' => array($this, 'show_presentation_presenter_type_description_field')
+
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Length of presentation', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_length',
+			'description'=> esc_html__( 'Length in minutes', 'elfsr' ),
+			'type'       => 'text_small',
+			'sanitization_cb' => array($this, 'sanitize_int_field'), // custom sanitization callback parameter
+			'attributes' => array(
+				'pattern' => '^\d+$', // positive integers only
+				'title' => esc_attr__( 'Numbers only', 'elfsr' ),
+			)
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Primary Topic', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_topic',
+			'type'       => 'select',
+			'options'    => array('Estate Planning' => 'Estate Planning', 'Medicaid Planning' => 'Medicaid Planning',
+			                      'Retirement and Finances' => 'Retirement and Finances', 'Living Trusts' => 'Living Trusts',
+			                      'Health Care Concersn' => 'Health Care Concerns', 'other' => 'Other'),
+			'column'     => true, // Display field value in the admin post-listing columns
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Describe the other presentation topic', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_topic_description',
+			'type'       => 'textarea_small',
+			'show_on_cb' => array($this, 'show_presentation_topic_description_field')
+
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Audio/Visual', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_av',
+			'type'       => 'multicheck_inline',
+			'options'    => array('Slides' => 'Slides', 'Workbook,' => 'Workbook',
+			                      'White Board' => 'White Board', 'Flip Chart' => 'Flip Chart',
+			                      'other' => 'Other')
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Describe the other audio/visual used', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_av_description',
+			'type'       => 'textarea_small',
+			'show_on_cb' => array($this, 'show_presentation_av_description_field')
+
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Response request', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_response_request',
+			'type'       => 'multicheck_inline',
+			'options'    => array('Request Appointment' => 'Request Appointment',
+			                      'Make appointment at seminar' => 'Make appointment at seminar',
+			                      'Request free book' => 'Request free book')
+		) );
+	}
+
+	public function event_meta(){
+
+		$e = new_cmb2_box( array(
+			'id'            => self::prefix . 'event_metabox',
+			'title'         => esc_html__( 'Event Details', 'elfsr' ),
+			'object_types'  => array( 'events' ), // Post type
+			'context'    => 'normal',
+			'priority'   => 'high',
+			'show_names' => true, // Show field names on the left
+		) );
+
+		$e->add_field( array(
+			'name'       => esc_html__( 'Nick name', 'elfsr' ),
+			'desc'       => esc_html__( 'Nick name for this presentation', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_nick_name',
+			'type'       => 'text',
+			'column'     => true, // Display field value in the admin post-listing columns
+		) );
+
+		$e->add_field( array(
+			'name'       => esc_html__( 'Presenter Type', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_presenter_type',
+			'type'       => 'multicheck_inline',
+			'options'    => array('Lawyer' => 'Lawyer', 'Multiple Lawyers, same firm' => 'Multiple Lawyers, same firm',
+			                      'Law staff' => 'Law staff', 'Financial advisor' => 'Financial advisor',
+			                      'other' => 'Other')
+		) );
+
+		$e->add_field( array(
+			'name'       => esc_html__( 'Describe the other presenter type', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_presenter_type_description',
+			'type'       => 'textarea_small',
+			'show_on_cb' => array($this, 'show_presentation_presenter_type_description_field')
+
+		) );
+
+		$e->add_field( array(
+			'name'       => esc_html__( 'Length of presentation', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_length',
+			'description'=> esc_html__( 'Length in minutes', 'elfsr' ),
+			'type'       => 'text_small',
+			'sanitization_cb' => array($this, 'sanitize_int_field'), // custom sanitization callback parameter
+			'attributes' => array(
+				'pattern' => '^\d+$', // positive integers only
+				'title' => esc_attr__( 'Numbers only', 'elfsr' ),
+			)
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Primary Topic', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_topic',
+			'type'       => 'select',
+			'options'    => array('Estate Planning' => 'Estate Planning', 'Medicaid Planning' => 'Medicaid Planning',
+			                      'Retirement and Finances' => 'Retirement and Finances', 'Living Trusts' => 'Living Trusts',
+			                      'Health Care Concersn' => 'Health Care Concerns', 'other' => 'Other'),
+			'column'     => true, // Display field value in the admin post-listing columns
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Describe the other presentation topic', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_topic_description',
+			'type'       => 'textarea_small',
+			'show_on_cb' => array($this, 'show_presentation_topic_description_field')
+
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Audio/Visual', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_av',
+			'type'       => 'multicheck_inline',
+			'options'    => array('Slides' => 'Slides', 'Workbook,' => 'Workbook',
+			                      'White Board' => 'White Board', 'Flip Chart' => 'Flip Chart',
+			                      'other' => 'Other')
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Describe the other audio/visual used', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_av_description',
+			'type'       => 'textarea_small',
+			'show_on_cb' => array($this, 'show_presentation_av_description_field')
+
+		) );
+
+		$p->add_field( array(
+			'name'       => esc_html__( 'Response request', 'elfsr' ),
+			'id'         => self::prefix . 'presentation_response_request',
+			'type'       => 'multicheck_inline',
+			'options'    => array('Request Appointment' => 'Request Appointment',
+			                      'Make appointment at seminar' => 'Make appointment at seminar',
+			                      'Request free book' => 'Request free book')
+		) );
+	}
+
 	/**
 	 * Custom "Show On" Callbacks - creates conditional displays
 	 * @param array     $cmb    This is an instance of the CMB2_Types object
@@ -180,9 +367,33 @@ class ELFSR_Post_Meta {
 	 */
 	public function show_venue_seating_arrangement_description_field( $cmb ) {
 		$arrangement = get_post_meta( $cmb->object_id(), self::prefix . 'venue_seating_arrangement', 1 );
-
 		// Only show if arrangement is 'other'
 		return 'other' === $arrangement;
+	}
+
+	public function show_presentation_presenter_type_description_field( $cmb ) {
+		$type = get_post_meta( $cmb->object_id(), self::prefix . 'presentation_presenter_type' );
+		if (in_array('other', $type)){
+			return true;
+		}else{
+			return false;
+		}
+
+	}
+
+	public function show_presentation_topic_description_field( $cmb ) {
+		$type = get_post_meta( $cmb->object_id(), self::prefix . 'presentation_topic', 1 );
+		return 'other' === $type;
+	}
+
+	public function show_presentation_av_description_field( $cmb ) {
+		$type = get_post_meta( $cmb->object_id(), self::prefix . 'presentation_av' );
+		if (in_array('other', $type)){
+			return true;
+		}else{
+			return false;
+		}
+
 	}
 
 	/**
