@@ -70,6 +70,16 @@ class ELFSR_Post_Meta {
 		add_action( 'cmb2_admin_init', array( $this, 'venue_meta' ) );
 		add_action( 'cmb2_admin_init', array( $this, 'presentation_meta' ) );
 		add_action( 'cmb2_admin_init', array( $this, 'event_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_direct_mail_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_email_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_digital_ad_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_social_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_newspaper_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_other_print_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_radio_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_tv_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'add_type_other_meta' ) );
+		add_action( 'cmb2_admin_init', array( $this, 'campaign_meta' ) );
 		add_action( 'cmb2_render_zip_code', array( $this, 'create_zip_code_field' ), 10, 5 );
 		add_filter( 'cmb2_sanitize_zip_code', array( $this, 'sanitize_zip_code_field' ), 10, 2 );
 	}
@@ -555,6 +565,536 @@ class ELFSR_Post_Meta {
 		) );
 	}
 
+	public function add_type_direct_mail_meta() {
+
+		$dm = new_cmb2_box( array(
+			'id'            => self::prefix . 'direct_mail_metabox',
+			'title'         => esc_html__( 'Direct Mail Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'direct-mail' )
+			),
+		) );
+
+		$dm->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$dm->add_field( array(
+			'name' => esc_html__( 'Headline', 'elfsr' ),
+			'id'   => self::prefix . 'ad_headline',
+			'type' => 'text'
+		) );
+
+		$dm->add_field( array(
+			'name'    => esc_html__( 'Direct Mail Style', 'elfsr' ),
+			'id'      => self::prefix . 'ad_dm_style',
+			'type'    => 'select',
+			'options' => array(
+				''                => 'Select one',
+				'Postcard'        => 'Postcard',
+				'Wedding'         => 'Wedding',
+				'Window'          => 'Window',
+				'Personal letter' => 'Personal letter'
+			)
+		) );
+
+		$dm->add_field( array(
+			'name'    => esc_html__( 'Testimonial Used?', 'elfsr' ),
+			'id'      => self::prefix . 'ad_use_testimonial',
+			'type'    => 'checkbox',
+			'options' => array(
+				'true' => 'Yes a testimonial was used'
+			)
+		) );
+
+		$dm->add_field( array(
+			'name' => esc_html__( 'Images of the direct mail piece', 'elfsr' ),
+			'id'   => self::prefix . 'add_images',
+			'type' => 'file_list'
+		) );
+
+		$dm->add_field( array(
+			'name' => esc_html__( 'Distribution Details', 'elfsr' ),
+			'id'   => self::prefix . 'distribution_title',
+			'type' => 'title'
+		) );
+
+		$dm->add_field( array(
+			'name'    => esc_html__( 'Distribution Method', 'elfsr' ),
+			'id'      => self::prefix . 'ad_dm_method',
+			'type'    => 'select',
+			'options' => array(
+				''                 => 'Select one',
+				'Direct Mail'      => 'Direct Mail',
+				'EDDM'             => 'EDDM',
+				'Window'           => 'Window',
+				'Own mailing list' => 'Own mailing list'
+			)
+		) );
+
+		$dm->add_field( array(
+			'name' => esc_html__( 'List provider name', 'elfsr' ),
+			'id'   => self::prefix . 'ad_list_provider',
+			'type' => 'text'
+		) );
+
+		$dm->add_field( array(
+			'name'            => esc_html__( 'Number Sent', 'elfsr' ),
+			'id'              => self::prefix . 'ad_dm_number_set',
+			'type'            => 'text_small',
+			'sanitization_cb' => array( $this, 'sanitize_int_field' ), // custom sanitization callback parameter
+			'attributes'      => array(
+				'pattern' => '^\d+$', // positive integers only
+				'title'   => esc_attr__( 'Numbers only', 'elfsr' ),
+			)
+		) );
+
+		$dm->add_field( array(
+			'name'    => esc_html__( 'List Selection', 'elfsr' ),
+			'id'      => self::prefix . 'ad_dm_list_selection',
+			'type'    => 'multicheck_inline',
+			'options' => array(
+				'Income'        => 'Income',
+				'Homeownership' => 'Homeownership',
+				'Wealthfinder'  => 'Wealthfinder',
+				'Radius'        => 'Radius',
+			)
+		) );
+
+		$dm->add_field( array(
+			'name'    => esc_html__( 'List Scrubbing', 'elfsr' ),
+			'id'      => self::prefix . 'ad_dm_list_scrub',
+			'type'    => 'select',
+			'options' => array(
+				''                                       => 'Select one',
+				'Remove all past registrants'            => 'Remove all past registrants',
+				'Remove past registrants within 30 days' => 'Remove past registrants within 30 days',
+				'Not Scrubbed'                           => 'Not Scrubbed'
+			)
+		) );
+
+		$dm->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function add_type_email_meta() {
+
+		$em = new_cmb2_box( array(
+			'id'            => self::prefix . 'email_metabox',
+			'title'         => esc_html__( 'Email Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'email' )
+			),
+		) );
+
+		$em->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$em->add_field( array(
+			'name' => esc_html__( 'Subject Line', 'elfsr' ),
+			'id'   => self::prefix . 'ad_email_subject_line',
+			'type' => 'text'
+		) );
+
+		$em->add_field( array(
+			'name' => esc_html__( 'From', 'elfsr' ),
+			'id'   => self::prefix . 'ad_email_from',
+			'type' => 'text'
+		) );
+
+		$em->add_field( array(
+			'name' => esc_html__( 'List source', 'elfsr' ),
+			'id'   => self::prefix . 'ad_email_list_source',
+			'type' => 'text'
+		) );
+
+		$em->add_field( array(
+			'name' => esc_html__( 'Content Description', 'elfsr' ),
+			'id'   => self::prefix . 'ad_email_content_description',
+			'type' => 'textarea_small'
+		) );
+
+		$em->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function add_type_digital_ad_meta() {
+
+		$da = new_cmb2_box( array(
+			'id'            => self::prefix . 'digital_ad_metabox',
+			'title'         => esc_html__( 'Digital Ad Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'digital-ad' )
+			),
+		) );
+
+		$da->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$da->add_field( array(
+			'name'    => esc_html__( 'Ad Type', 'elfsr' ),
+			'id'      => self::prefix . 'ad_da_type',
+			'type'    => 'select',
+			'options' => array(
+				''         => 'Select one',
+				'Facebook' => 'Facebook',
+				'Adwords'  => 'Adwords',
+				'LinkedIn' => 'LinkedIn',
+				'other'    => 'Other'
+			)
+		) );
+
+		$da->add_field( array(
+			'name'       => esc_html__( 'Ad Type Description', 'elfsr' ),
+			'id'         => self::prefix . 'ad_da_type_description',
+			'type'       => 'textarea_small',
+			'show_on_cb' => 'show_digital_ad_type_description_field'
+		) );
+
+		$da->add_field( array(
+			'name' => esc_html__( 'Images of the digital ad', 'elfsr' ),
+			'id'   => self::prefix . 'add_images',
+			'type' => 'file_list'
+		) );
+
+		$da->add_field( array(
+			'name' => esc_html__( 'Target Audience', 'elfsr' ),
+			'id'   => self::prefix . 'ad_da_target_audience',
+			'type' => 'textarea_small'
+		) );
+
+		$da->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function add_type_social_meta() {
+
+		$s = new_cmb2_box( array(
+			'id'            => self::prefix . 'social_metabox',
+			'title'         => esc_html__( 'Social Ad Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'social' )
+			),
+		) );
+
+		$s->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$s->add_field( array(
+			'name'    => esc_html__( 'Social Media Platform', 'elfsr' ),
+			'id'      => self::prefix . 'ad_social_platform',
+			'type'    => 'select',
+			'options' => array(
+				''         => 'Select one',
+				'Facebook' => 'Facebook',
+				'Twitter'  => 'Twitter',
+				'LinkedIn' => 'LinkedIn',
+				'other'    => 'Other'
+			)
+		) );
+
+		$s->add_field( array(
+			'name'       => esc_html__( 'Social Platform Description', 'elfsr' ),
+			'id'         => self::prefix . 'ad_social_platform_description',
+			'type'       => 'textarea_small',
+			'show_on_cb' => 'show_social_platform_description_field'
+		) );
+
+		$s->add_field( array(
+			'name' => esc_html__( 'Images of the digital ad', 'elfsr' ),
+			'id'   => self::prefix . 'add_images',
+			'type' => 'file_list'
+		) );
+
+		$s->add_field( array(
+			'name' => esc_html__( 'Target Audience', 'elfsr' ),
+			'id'   => self::prefix . 'ad_social_target_audience',
+			'type' => 'textarea_small'
+		) );
+
+		$s->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function add_type_newspaper_meta() {
+
+		$np = new_cmb2_box( array(
+			'id'            => self::prefix . 'newspaper_metabox',
+			'title'         => esc_html__( 'Newspaper Ad Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'newspaper' )
+			),
+		) );
+
+		$np->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$np->add_field( array(
+			'name'    => esc_html__( 'Newspaper Type', 'elfsr' ),
+			'id'      => self::prefix . 'ad_newspaper_type',
+			'type'    => 'select',
+			'options' => array(
+				''         => 'Select one',
+				'Daily' => 'Daily',
+				'Weekly'  => 'Weekly',
+			)
+		) );
+
+		$np->add_field( array(
+			'name'    => esc_html__( 'Newspaper Ad Type', 'elfsr' ),
+			'id'      => self::prefix . 'ad_newspaper_ad_type',
+			'type'    => 'select',
+			'options' => array(
+				''         => 'Select one',
+				'Display' => 'Display',
+				'Insert'  => 'Insert',
+			)
+		) );
+
+		$np->add_field( array(
+			'name' => esc_html__( 'Images of the digital ad', 'elfsr' ),
+			'id'   => self::prefix . 'add_images',
+			'type' => 'file_list'
+		) );
+
+		$np->add_field( array(
+			'name' => esc_html__( 'Add Date', 'elfsr' ),
+			'id'   => self::prefix . 'ad_newspaper_date',
+			'type' => 'text_date'
+		) );
+
+		$np->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function add_type_other_print_meta() {
+
+		$op = new_cmb2_box( array(
+			'id'            => self::prefix . 'other_print_metabox',
+			'title'         => esc_html__( 'Other Print Ad Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'other-print' )
+			),
+		) );
+
+		$op->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$op->add_field( array(
+			'name' => esc_html__( 'Images of the digital ad', 'elfsr' ),
+			'id'   => self::prefix . 'add_images',
+			'type' => 'file_list'
+		) );
+
+		$op->add_field( array(
+			'name' => esc_html__( 'Add Date', 'elfsr' ),
+			'id'   => self::prefix . 'ad_other_print_date',
+			'type' => 'text_date'
+		) );
+
+		$op->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function add_type_radio_meta() {
+
+		$r = new_cmb2_box( array(
+			'id'            => self::prefix . 'radio_metabox',
+			'title'         => esc_html__( 'Radio Ad Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'radio' )
+			),
+		) );
+
+		$r->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$r->add_field( array(
+			'name' => esc_html__( 'Radio Station', 'elfsr' ),
+			'id'   => self::prefix . 'ad_station',
+			'type' => 'text'
+		) );
+
+		$r->add_field( array(
+			'name' => esc_html__( 'Add Air Date', 'elfsr' ),
+			'id'   => self::prefix . 'ad_radio_air_date',
+			'type' => 'text_date'
+		) );
+
+		$r->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function add_type_tv_meta() {
+
+		$tv = new_cmb2_box( array(
+			'id'            => self::prefix . 'tv_metabox',
+			'title'         => esc_html__( 'Television Ad Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'television' )
+			),
+		) );
+
+		$tv->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$tv->add_field( array(
+			'name' => esc_html__( 'TV Station', 'elfsr' ),
+			'id'   => self::prefix . 'ad_station',
+			'type' => 'text'
+		) );
+
+		$tv->add_field( array(
+			'name' => esc_html__( 'Add Air Date', 'elfsr' ),
+			'id'   => self::prefix . 'ad_tv_air_date',
+			'type' => 'text_date'
+		) );
+
+		$tv->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function add_type_other_meta() {
+
+		$tv = new_cmb2_box( array(
+			'id'            => self::prefix . 'other_ad_type_metabox',
+			'title'         => esc_html__( 'Other Ad Type Details', 'elfsr' ),
+			'object_types'  => array( 'ads' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+			'show_on_cb'    => array( $this, 'taxonomy_show_on_filter' ), // function should return a bool value
+			'show_on_terms' => array(
+				'ad_type' => array( 'other-ad-type' )
+			),
+		) );
+
+		$tv->add_field( array(
+			'name' => esc_html__( 'Nickname', 'elfsr' ),
+			'id'   => self::prefix . 'ad_nickname',
+			'type' => 'text'
+		) );
+
+		$tv->add_field( array(
+			'name' => esc_html__( 'Notes', 'elfsr' ),
+			'id'   => self::prefix . 'ad_notes',
+			'type' => 'textarea_small'
+		) );
+	}
+
+	public function campaign_meta() {
+
+		$c = new_cmb2_box( array(
+			'id'            => self::prefix . 'campaign_metabox',
+			'title'         => esc_html__( 'Campaign Details', 'elfsr' ),
+			'object_types'  => array( 'campaign' ), // Post type
+			'context'       => 'normal',
+			'priority'      => 'high',
+			'show_names'    => true, // Show field names on the left
+		) );
+
+		$c->add_field( array(
+			'name'       => esc_html__( 'Events', 'elfsr' ),
+			'id'         => self::prefix . 'campaign_events',
+			'type'       => 'multicheck',
+			'options_cb' => array( $this, 'event_posts_by_lawfirm' )
+		) );
+
+		$c->add_field( array(
+			'name'       => esc_html__( 'Ads', 'elfsr' ),
+			'id'         => self::prefix . 'campaign_ads',
+			'type'       => 'multicheck',
+			'options_cb' => array( $this, 'ad_posts_by_lawfirm' )
+		) );
+	}
+
 	/**
 	 * Custom Options Callbacks - creates the options list
 	 *
@@ -573,6 +1113,40 @@ class ELFSR_Post_Meta {
 		$options_array = $this->get_posts_by_lawfirm( 'venue', $lawfirm_id );
 		if ( empty( $options_array ) ) {
 			return array( '' => 'No venu exists for this law firm' );
+		} else {
+			return $options_array;
+		}
+
+
+	}
+
+	public function event_posts_by_lawfirm( $field ) {
+		$post_id    = $field->object_id;   // event post id
+		$lawfirm_id = $this->get_lawfirm_id( $post_id );
+		if ( empty( $lawfirm_id ) ) {
+			return array( '' => 'No Law Firm is selected for this campaign' );
+		}
+
+		$options_array = $this->get_posts_by_lawfirm( 'events', $lawfirm_id );
+		if ( empty( $options_array ) ) {
+			return array( '' => 'No event exists for this law firm' );
+		} else {
+			return $options_array;
+		}
+
+
+	}
+
+	public function ad_posts_by_lawfirm( $field ) {
+		$post_id    = $field->object_id;   // event post id
+		$lawfirm_id = $this->get_lawfirm_id( $post_id );
+		if ( empty( $lawfirm_id ) ) {
+			return array( '' => 'No Law Firm is selected for this campaign' );
+		}
+
+		$options_array = $this->get_posts_by_lawfirm( 'ads', $lawfirm_id );
+		if ( empty( $options_array ) ) {
+			return array( '' => 'No ad exists for this law firm' );
 		} else {
 			return $options_array;
 		}
@@ -670,6 +1244,18 @@ class ELFSR_Post_Meta {
 		return 'other' === $type;
 	}
 
+	public function show_digital_ad_type_description_field( $cmb ) {
+		$type = get_post_meta( $cmb->object_id(), self::prefix . 'ad_da_type_description', 1 );
+
+		return 'other' === $type;
+	}
+
+	public function show_social_platform_description_field( $cmb ) {
+		$type = get_post_meta( $cmb->object_id(), self::prefix . 'ad_social_platform_description', 1 );
+
+		return 'other' === $type;
+	}
+
 	/**
 	 * Custom CMB2 Fields
 	 *
@@ -724,5 +1310,42 @@ class ELFSR_Post_Meta {
 		}
 
 	}
+
+	/**
+	 * Taxonomy show_on filter
+	 * @author Bill Erickson
+	 *
+	 * @param  object $cmb CMB2 object
+	 *
+	 * @return bool        True/false whether to show the metabox
+	 */
+	public function taxonomy_show_on_filter( $cmb ) {
+		$tax_terms_to_show_on = $cmb->prop( 'show_on_terms', array() );
+		if ( empty( $tax_terms_to_show_on ) || ! $cmb->object_id() ) {
+			return false;
+		}
+		$post_id = $cmb->object_id();
+		$post    = get_post( $post_id );
+		foreach ( (array) $tax_terms_to_show_on as $taxonomy => $slugs ) {
+			if ( ! is_array( $slugs ) ) {
+				$slugs = array( $slugs );
+			}
+			$terms = $post
+				? get_the_terms( $post, $taxonomy )
+				: wp_get_object_terms( $post_id, $taxonomy );
+			if ( ! empty( $terms ) ) {
+				foreach ( $terms as $term ) {
+					if ( in_array( $term->slug, $slugs, true ) ) {
+
+						// Ok, show this metabox
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
 
 }
