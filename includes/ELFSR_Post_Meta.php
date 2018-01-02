@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: ander
+ * User: Rick Anderson
  * Date: 11/17/2017
  * Time: 9:54 AM
  */
@@ -885,9 +885,9 @@ class ELFSR_Post_Meta {
 			'id'      => self::prefix . 'ad_newspaper_type',
 			'type'    => 'select',
 			'options' => array(
-				''         => 'Select one',
-				'Daily' => 'Daily',
-				'Weekly'  => 'Weekly',
+				''       => 'Select one',
+				'Daily'  => 'Daily',
+				'Weekly' => 'Weekly',
 			)
 		) );
 
@@ -896,7 +896,7 @@ class ELFSR_Post_Meta {
 			'id'      => self::prefix . 'ad_newspaper_ad_type',
 			'type'    => 'select',
 			'options' => array(
-				''         => 'Select one',
+				''        => 'Select one',
 				'Display' => 'Display',
 				'Insert'  => 'Insert',
 			)
@@ -1072,12 +1072,12 @@ class ELFSR_Post_Meta {
 	public function campaign_meta() {
 
 		$c = new_cmb2_box( array(
-			'id'            => self::prefix . 'campaign_metabox',
-			'title'         => esc_html__( 'Campaign Details', 'elfsr' ),
-			'object_types'  => array( 'campaign' ), // Post type
-			'context'       => 'normal',
-			'priority'      => 'high',
-			'show_names'    => true, // Show field names on the left
+			'id'           => self::prefix . 'campaign_metabox',
+			'title'        => esc_html__( 'Campaign Details', 'elfsr' ),
+			'object_types' => array( 'campaign' ), // Post type
+			'context'      => 'normal',
+			'priority'     => 'high',
+			'show_names'   => true, // Show field names on the left
 		) );
 
 		$c->add_field( array(

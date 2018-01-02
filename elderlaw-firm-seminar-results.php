@@ -4,7 +4,7 @@
 Plugin Name: Elderlaw Firm Seminar Results
 Plugin URI: https://github.com/rickandersonaia/elderlaw_firm_seminar_results
 Description: This plugin creates post types, taxonomies and post meta for firm seminars.
-Version: 0.1
+Version: 0.2
 Author: Rick Anderson
 Author URI: https://www.byobwebsite.com
  * License:     GPLv2
@@ -14,7 +14,7 @@ Author URI: https://www.byobwebsite.com
  * @link    https://github.com/rickandersonaia/elderlaw_firm_seminar_results
  *
  * @package Elderlaw_Firm_Seminar_Results
- * @version 0.1
+ * @version 0.2
  *
  */
 
@@ -35,11 +35,10 @@ Author URI: https://www.byobwebsite.com
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+final class Elderlaw_Firm_Seminar_Results {
 
-final class Elderlaw_Firm_Seminar_Results{
 
-
-	const VERSION = '0.1';
+	const VERSION = '0.2';
 	protected static $single_instance = null;
 	public $post_id = 0;
 	protected $url = '';
@@ -60,8 +59,8 @@ final class Elderlaw_Firm_Seminar_Results{
 			require_once VENDOR_PATH . 'webdevstudios/cmb2/init.php';
 		}
 
-		if(is_admin()){
-			add_action('admin_enqueue_scripts', array($this, 'admin_styles'));
+		if ( is_admin() ) {
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 		}
 
 		require_once( INC_PATH . 'ELFSR_Post_Types.php' );
@@ -69,17 +68,16 @@ final class Elderlaw_Firm_Seminar_Results{
 		require_once( INC_PATH . 'ELFSR_Post_Meta.php' );
 		require_once( VENDOR_PATH . 'autoload.php' );
 
-		add_action('init', array($this, 'init'));
+		add_action( 'init', array( $this, 'init' ) );
 
 		new ELFSR_Post_Types();
 		new ELFSR_Taxonomies();
 		new ELFSR_Post_Meta();
 	}
 
-	public function admin_styles(){
-		wp_enqueue_style('elfsr-admin', STATIC_URL . "admin.css");
+	public function admin_styles() {
+		wp_enqueue_style( 'elfsr-admin', STATIC_URL . "admin.css" );
 	}
-
 
 
 	/**
@@ -95,6 +93,7 @@ final class Elderlaw_Firm_Seminar_Results{
 
 		return self::$single_instance;
 	}
+
 	/**
 	 * Activate the plugin.
 	 *

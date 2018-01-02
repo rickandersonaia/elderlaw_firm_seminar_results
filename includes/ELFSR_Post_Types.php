@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: ander
+ * User: Rick Anderson
  * Date: 11/17/2017
  * Time: 9:54 AM
  */
@@ -9,12 +9,12 @@
 class ELFSR_Post_Types {
 
 	public function __construct() {
-		add_action( 'init', array($this, 'law_firm_post_type'), 9 );
-		add_action( 'init', array($this, 'campaign_post_type'), 9 );
-		add_action( 'init', array($this, 'event_post_type'), 9 );
-		add_action( 'init', array($this, 'presentation_post_type'), 9 );
-		add_action( 'init', array($this, 'venue_post_type'), 9 );
-		add_action( 'init', array($this, 'ad_post_type'), 9 );
+		add_action( 'init', array( $this, 'law_firm_post_type' ), 9 );
+		add_action( 'init', array( $this, 'campaign_post_type' ), 9 );
+		add_action( 'init', array( $this, 'event_post_type' ), 9 );
+		add_action( 'init', array( $this, 'presentation_post_type' ), 9 );
+		add_action( 'init', array( $this, 'venue_post_type' ), 9 );
+		add_action( 'init', array( $this, 'ad_post_type' ), 9 );
 	}
 
 	public function law_firm_post_type() {
@@ -50,14 +50,14 @@ class ELFSR_Post_Types {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
-			'taxonomies'         => array('firm', 'demographic')
+			'taxonomies'         => array( 'firm', 'demographic' )
 		);
 
 		register_post_type( 'law_firm', $args );
 	}
 
 	public function campaign_post_type() {
-		$labels = array(			
+		$labels = array(
 			'name'               => _x( 'Campaigns', 'post type general name', 'your-plugin-textdomain' ),
 			'singular_name'      => _x( 'Campaign', 'post type singular name', 'your-plugin-textdomain' ),
 			'menu_name'          => _x( 'Campaigns', 'admin menu', 'your-plugin-textdomain' ),
@@ -88,7 +88,7 @@ class ELFSR_Post_Types {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
-			'taxonomies'         => array('firm')
+			'taxonomies'         => array( 'firm' )
 		);
 
 		register_post_type( 'campaign', $args );
@@ -127,7 +127,7 @@ class ELFSR_Post_Types {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
-			'taxonomies'         => array('firm')
+			'taxonomies'         => array( 'firm' )
 		);
 
 		register_post_type( 'events', $args );
@@ -165,7 +165,7 @@ class ELFSR_Post_Types {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
-			'taxonomies'         => array('firm')
+			'taxonomies'         => array( 'firm' )
 		);
 
 		register_post_type( 'presentation', $args );
@@ -204,7 +204,7 @@ class ELFSR_Post_Types {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
-			'taxonomies'         => array('firm', 'venue_type')
+			'taxonomies'         => array( 'firm', 'venue_type' )
 		);
 
 		register_post_type( 'venue', $args );
@@ -242,7 +242,7 @@ class ELFSR_Post_Types {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
-			'taxonomies'         => array('firm', 'ad_type')
+			'taxonomies'         => array( 'firm', 'ad_type' )
 		);
 
 		register_post_type( 'ads', $args );
